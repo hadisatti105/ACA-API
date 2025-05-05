@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DID Submission</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      padding: 40px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    form {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 25px;
+      border-radius: 8px;
+      max-width: 400px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #response {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e9ecef;
+      border-left: 4px solid #007bff;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Submit Inbound Number</h2>
+  <form id="dialerForm">
+    <label for="did">Enter DID:</label>
+    <input type="text" id="did" name="did" placeholder="e.g. 3342721877" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="response"></div>
+
+  <script>
+    document.getElementById('dialerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const did = document.getElementById('did').value.trim();
+
+      if (!/^\d{10}$/.test(did)) {
+        document.getElementById('response').innerText = 'Please enter a valid 10-digit DID.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`/submit-did?did=${encodeURIComponent(did)}`);
+        const data = await response.text();
+        document.getElementById('response').innerText = `Response: ${data}`;
+      } catch (error) {
+        document.getElementById('response').innerText = 'Error sending request.';
+      }
+    });
+  </script>
+</body>
+</html>
